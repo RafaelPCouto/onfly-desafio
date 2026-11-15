@@ -76,3 +76,17 @@ Resultado: **5 testes falharam em 1,38 s**, com código de saída `1`.
 ### Situação ao encerrar a etapa
 
 Diagnóstico concluído. Nenhuma correção foi aplicada ao código, aos testes ou aos dados. Este registro documenta a situação inicial e servirá de base para as próximas etapas.
+
+## Etapa 2 — Correção da conversão cambial
+
+Data: 15/11/2026.
+
+Em `src/onfly_report/services/currency_converter.py`, a conversão passou a utilizar `amount * rate`, mantendo ambos os operandos como `Decimal`. Foram removidas as conversões para `float` e substituída a divisão pela multiplicação exigida pelo README. O resultado permanece sem arredondamento nessa função.
+
+Validação executada com o Python da `.venv`, fora do sandbox para acessar o interpretador base:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider tests/test_currency.py
+```
+
+Resultado: **1 teste passou em 0,32 s**, com código de saída `0`. O cenário de BRL 100,00 mais USD 100,00 à taxa de 5,42 agora totaliza corretamente `642.00` BRL. A suíte completa não foi executada nesta etapa; os demais defeitos identificados continuam pendentes. Os testes fornecidos permaneceram inalterados.
