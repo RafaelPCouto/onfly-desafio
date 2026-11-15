@@ -90,3 +90,17 @@ Validação executada com o Python da `.venv`, fora do sandbox para acessar o in
 ```
 
 Resultado: **1 teste passou em 0,32 s**, com código de saída `0`. O cenário de BRL 100,00 mais USD 100,00 à taxa de 5,42 agora totaliza corretamente `642.00` BRL. A suíte completa não foi executada nesta etapa; os demais defeitos identificados continuam pendentes. Os testes fornecidos permaneceram inalterados.
+
+## Etapa 3 — Correção do cálculo de noites
+
+Data: 15/11/2026.
+
+Em `src/onfly_report/services/stay_calculator.py`, o cálculo passou de `(checkout.day - checkin.day) * rooms` para `(checkout - checkin).days * rooms`. A subtração agora considera as datas completas, incluindo mês e ano. O atributo `.days` extrai a quantidade de dias do intervalo resultante, que é multiplicada pelo número de quartos, mantendo a diferença não inclusiva.
+
+Validação executada com o Python da `.venv`, fora do sandbox para acessar o interpretador base:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider tests/test_nights.py
+```
+
+Resultado: **1 teste passou em 0,38 s**, com código de saída `0`. O cenário de check-in em 30/01/2025 e check-out em 02/02/2025, para um quarto, agora retorna corretamente `3` noites, em vez de `-28`. A suíte completa não foi executada nesta etapa. Os testes fornecidos permaneceram inalterados.
