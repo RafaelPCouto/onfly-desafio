@@ -1,0 +1,32 @@
+ .gitignore                                         |  18 [32m++[m
+ README.md                                          | 242 [32m+++++++++++++++++[m
+ data/exemplo-validacao.csv                         |  13 [32m+[m
+ data/reservas_hoteis.csv                           | 301 [32m+++++++++++++++++++++[m
+ data/taxas_cambio.csv                              |   4 [32m+[m
+ entrega/.gitkeep                                   |   0
+ output/.gitkeep                                    |   0
+ pyproject.toml                                     |  18 [32m++[m
+ requirements-dev.txt                               |   2 [32m+[m
+ requirements.txt                                   |   2 [32m+[m
+ src/onfly_report/__init__.py                       |   3 [32m+[m
+ src/onfly_report/__main__.py                       |   3 [32m+[m
+ src/onfly_report/cli.py                            |  76 [32m++++++[m
+ src/onfly_report/exceptions.py                     |   9 [32m+[m
+ src/onfly_report/logging_config.py                 |  15 [32m+[m
+ src/onfly_report/models.py                         |  36 [32m+++[m
+ src/onfly_report/repositories/__init__.py          |   0
+ .../repositories/csv_rate_repository.py            |  48 [32m++++[m
+ .../repositories/csv_reservation_repository.py     |  53 [32m++++[m
+ src/onfly_report/services/__init__.py              |   0
+ src/onfly_report/services/currency_converter.py    |  11 [32m+[m
+ src/onfly_report/services/report_builder.py        | 118 [32m++++++++[m
+ src/onfly_report/services/row_parser.py            |  40 [32m+++[m
+ src/onfly_report/services/status_policy.py         |   8 [32m+[m
+ src/onfly_report/services/stay_calculator.py       |  10 [32m+[m
+ tests/helpers.py                                   |  96 [32m+++++++[m
+ tests/test_currency.py                             |  15 [32m+[m
+ tests/test_nights.py                               |  19 [32m++[m
+ tests/test_regression_report.py                    |  35 [32m+++[m
+ tests/test_status_rules.py                         |  21 [32m++[m
+ tests/test_top_hotels.py                           |  19 [32m++[m
+ 31 files changed, 1235 insertions(+)
