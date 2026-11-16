@@ -134,3 +134,19 @@ Validação executada com a suíte completa, usando o Python da `.venv` fora do 
 Resultado: **5 testes passaram em 1,56 s**, com código de saída `0`. O teste de ranking agora retorna `H01, H02, H03`, na ordem esperada. A suíte também validou os cenários fornecidos de câmbio, noites, status e regressão. Os testes fornecidos permaneceram inalterados; o cenário de empate não é exercitado por essa suíte.
 
 Permanece pendente a correção da leitura truncada em 200 reservas, identificada na etapa 1 e não coberta pelos testes fornecidos.
+
+## Etapa 6 — Remoção do limite de leitura de reservas
+
+Data: 15/11/2026.
+
+Em `src/onfly_report/repositories/csv_reservation_repository.py`, foram removidos o teste `len(rows) == 200` e o `break` correspondente. O repositório agora percorre o CSV até o fim, preservando o número da linha física de cada reserva e as validações existentes.
+
+Validação executada com o Python da `.venv`, fora do sandbox para acessar o interpretador base:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider
+```
+
+Resultado: **5 testes passaram em 1,16 s**, com código de saída `0`. Como a suíte fornecida não cobre o limite de leitura, também foi realizada uma verificação direta, sem criar arquivos: a quantidade retornada por `CsvReservationRepository.read()` foi comparada à contagem independente com `csv.DictReader` no arquivo `data/reservas_hoteis.csv`. Ambas retornaram **300 reservas**, confirmando a leitura integral. A primeira tentativa dessa verificação teve erro de aspas no comando; após corrigir a passagem do script ao Python, a validação passou.
+
+Os testes fornecidos e os dados permaneceram inalterados. Todos os defeitos listados no diagnóstico inicial receberam correções; as verificações realizadas estão registradas nas etapas acima.
