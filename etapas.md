@@ -118,3 +118,19 @@ Validação executada com o Python da `.venv`, fora do sandbox para acessar o in
 ```
 
 Resultado: **1 teste passou em 0,35 s**, com código de saída `0`. No cenário com uma reserva de cada status, as três reservas continuam contabilizadas e apenas a confirmada contribui com `100.00` BRL e `1` noite. A suíte completa não foi executada nesta etapa. Os testes fornecidos permaneceram inalterados.
+
+## Etapa 5 — Correção da ordenação dos hotéis
+
+Data: 15/11/2026.
+
+Em `src/onfly_report/services/report_builder.py`, a chave de ordenação passou de `(amount, hotel_id)` para `(-amount, hotel_id)`. O ranking agora prioriza os maiores valores e mantém o ID crescente como critério de desempate. A ordenação continua usando os valores exatos em `Decimal`, antes da formatação monetária.
+
+Validação executada com a suíte completa, usando o Python da `.venv` fora do sandbox para acessar o interpretador base:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider
+```
+
+Resultado: **5 testes passaram em 1,56 s**, com código de saída `0`. O teste de ranking agora retorna `H01, H02, H03`, na ordem esperada. A suíte também validou os cenários fornecidos de câmbio, noites, status e regressão. Os testes fornecidos permaneceram inalterados; o cenário de empate não é exercitado por essa suíte.
+
+Permanece pendente a correção da leitura truncada em 200 reservas, identificada na etapa 1 e não coberta pelos testes fornecidos.
