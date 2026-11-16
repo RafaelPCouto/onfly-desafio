@@ -150,3 +150,50 @@ Validação executada com o Python da `.venv`, fora do sandbox para acessar o in
 Resultado: **5 testes passaram em 1,16 s**, com código de saída `0`. Como a suíte fornecida não cobre o limite de leitura, também foi realizada uma verificação direta, sem criar arquivos: a quantidade retornada por `CsvReservationRepository.read()` foi comparada à contagem independente com `csv.DictReader` no arquivo `data/reservas_hoteis.csv`. Ambas retornaram **300 reservas**, confirmando a leitura integral. A primeira tentativa dessa verificação teve erro de aspas no comando; após corrigir a passagem do script ao Python, a validação passou.
 
 Os testes fornecidos e os dados permaneceram inalterados. Todos os defeitos listados no diagnóstico inicial receberam correções; as verificações realizadas estão registradas nas etapas acima.
+
+## Etapa 7 — Bateria geral de testes conforme o README
+
+Data: 15/11/2026.
+
+O histórico foi movido de `etapas.md` na raiz para `entrega/etapas.md`, conforme solicitado. Foram adicionados 18 casos em `tests/test_readme_contract.py`, preservando os cinco testes originais e o utilitário fornecido.
+
+### Cobertura adicional
+
+- Comparação integral da amostra com as tabelas do README: resumo, meses e cinco hotéis, incluindo nomes, noites e valores.
+- Leitura das 300 reservas do arquivo principal e comparação de resumo, agregações mensais e todos os hotéis com cálculo independente a partir dos CSVs usando `csv.DictReader`, datas civis e `Decimal`.
+- Ranking por valor decrescente, desempate por ID crescente e aplicação de `--top`, inclusive quando há menos hotéis que o limite solicitado.
+- Soma antes do arredondamento e half-up: dois valores de `0.005` totalizam `0.01`, e a média de `0.005` é serializada como `0.01`.
+- Virada de ano, multiplicação por quartos, ordenação dos meses e atribuição ao mês do check-in.
+- Arquivo sem reservas e arquivo contendo apenas reservas não faturáveis: valores e média zerados, sem meses nem hotéis faturáveis.
+- Chaves do relatório e do resumo, tipos do resumo, formato monetário com duas casas, versão `1.0` e offset `-03:00`.
+- Argumentos obrigatórios e `--top` inválido (zero, negativo e não inteiro): saída `2`.
+- Entradas ausentes ou inválidas (colunas, data e taxa): saída `2`.
+- Caminho padrão `output/report.json`, criação do diretório, limite padrão de cinco hotéis e resumo no stdout.
+- Falha de escrita provocada por um arquivo bloqueando a criação do diretório: saída `1`.
+
+### Execução e resultados
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider
+```
+
+Resultado: **23 testes passaram em 8,01 s**, com código de saída `0`, utilizando o Python da `.venv` fora do sandbox para acesso ao interpretador base.
+
+Também foram executados os comandos reais do CLI:
+
+```powershell
+$env:PYTHONPATH = 'src'
+.\.venv\Scripts\python.exe -B -m onfly_report --input data/reservas_hoteis.csv --rates data/taxas_cambio.csv --output output/report.json
+.\.venv\Scripts\python.exe -B -m onfly_report --input data/exemplo-validacao.csv --rates data/taxas_cambio.csv --output output/exemplo.json
+```
+
+Ambos concluíram com código `0`, gerando os respectivos relatórios:
+
+| Dataset | Reservas | Confirmadas | Noites de quarto | Total BRL |
+| --- | --- | --- | --- | --- |
+| Principal | 300 | 235 | 1347 | 396170.00 |
+| Amostra do README | 12 | 9 | 28 | 7566.00 |
+
+Nenhuma nova falha foi encontrada nesses cenários. O Git confirmou que os testes fornecidos e os arquivos de dados permaneceram inalterados. Nesta etapa foram alterados apenas o local e o conteúdo do histórico, adicionados os testes complementares e gerados os relatórios em `output/` (ignorados pelo Git).
+
+Esta validação cobre o comportamento técnico descrito acima. A documentação final `entrega/README-ENTREGA.md`, os registros e a declaração de uso de IA e a publicação/compartilhamento do repositório continuam como itens de entrega do README; não foram realizados nesta etapa.
