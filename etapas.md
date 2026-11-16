@@ -104,3 +104,17 @@ Validação executada com o Python da `.venv`, fora do sandbox para acessar o in
 ```
 
 Resultado: **1 teste passou em 0,38 s**, com código de saída `0`. O cenário de check-in em 30/01/2025 e check-out em 02/02/2025, para um quarto, agora retorna corretamente `3` noites, em vez de `-28`. A suíte completa não foi executada nesta etapa. Os testes fornecidos permaneceram inalterados.
+
+## Etapa 4 — Correção da política de status
+
+Data: 15/11/2026.
+
+Em `src/onfly_report/services/status_policy.py`, a regra passou de `status != "CANCELLED"` para `status == "CONFIRMED"`. Somente reservas confirmadas são consideradas faturáveis; `CANCELLED` e `NO_SHOW` continuam nas contagens de reservas e status, mas ficam fora das noites, valores, agregações mensais e ranking.
+
+Validação executada com o Python da `.venv`, fora do sandbox para acessar o interpretador base:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -q -p no:cacheprovider tests/test_status_rules.py
+```
+
+Resultado: **1 teste passou em 0,35 s**, com código de saída `0`. No cenário com uma reserva de cada status, as três reservas continuam contabilizadas e apenas a confirmada contribui com `100.00` BRL e `1` noite. A suíte completa não foi executada nesta etapa. Os testes fornecidos permaneceram inalterados.
